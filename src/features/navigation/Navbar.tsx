@@ -14,14 +14,13 @@ function Navbar() {
           Home
         </Link>{" "}
       </li>
-
       <li onClick={toggleDisplayNavbar}>
         <Link
-          to="/about"
+          to="/goal/goals"
           className="[&.active]:text-primary [&.active]:bg-accent/50  px-4 py-2 rounded-md transition-all duration-300"
         >
-          About
-        </Link>
+          Goal
+        </Link>{" "}
       </li>
       <li onClick={toggleDisplayNavbar}>
         <Link

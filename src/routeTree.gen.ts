@@ -13,12 +13,12 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LayoutsImport } from './routes/_layouts'
+import { Route as LayoutsGoalGoalsImport } from './routes/_layouts/goal/goals'
 
 // Create Virtual Routes
 
 const LoginLazyImport = createFileRoute('/login')()
-const ErrorLazyImport = createFileRoute('/error')()
-const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
@@ -28,20 +28,20 @@ const LoginLazyRoute = LoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route))
 
-const ErrorLazyRoute = ErrorLazyImport.update({
-  path: '/error',
+const LayoutsRoute = LayoutsImport.update({
+  id: '/_layouts',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/error.lazy').then((d) => d.Route))
-
-const AboutLazyRoute = AboutLazyImport.update({
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const LayoutsGoalGoalsRoute = LayoutsGoalGoalsImport.update({
+  path: '/goal/goals',
+  getParentRoute: () => LayoutsRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -51,17 +51,17 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      preLoaderRoute: typeof AboutLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/error': {
-      preLoaderRoute: typeof ErrorLazyImport
+    '/_layouts': {
+      preLoaderRoute: typeof LayoutsImport
       parentRoute: typeof rootRoute
     }
     '/login': {
       preLoaderRoute: typeof LoginLazyImport
       parentRoute: typeof rootRoute
+    }
+    '/_layouts/goal/goals': {
+      preLoaderRoute: typeof LayoutsGoalGoalsImport
+      parentRoute: typeof LayoutsImport
     }
   }
 }
@@ -70,8 +70,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
-  AboutLazyRoute,
-  ErrorLazyRoute,
+  LayoutsRoute.addChildren([LayoutsGoalGoalsRoute]),
   LoginLazyRoute,
 ])
 
